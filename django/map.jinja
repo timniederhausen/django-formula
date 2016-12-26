@@ -1,0 +1,16 @@
+{% import_yaml 'django/defaults.yaml' as defaults %}
+{% import_yaml 'django/osmap.yaml' as osmap %}
+
+{# get the settings for the os_family grain #}
+{% set osfam = salt['grains.filter_by'](osmap) or {} %}
+
+{# merge the os family/codename specific data over the defaults #}
+{% do defaults.django.update(osfam) %}
+
+{# merge the pillar:lookup dict into the defaults/os specific dict #}
+{% set lookup = salt['pillar.get']('django:lookup',
+                                   default=defaults.django,
+                                   merge=True) %}
+
+{# merge the actual django pillar into the above combined dict #}
+{% set django = salt['pillar.get']('django', default=lookup, merge=True) %}

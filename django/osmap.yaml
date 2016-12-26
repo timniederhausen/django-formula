@@ -1,0 +1,5 @@
+FreeBSD:
+  python: /usr/local/bin/python3.5
+  packages:
+    - python35
+    - py35-sqlite3
