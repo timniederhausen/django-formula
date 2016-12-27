@@ -57,6 +57,13 @@ dj_{{ app.name }}_env:
     {{ sls_block(app.env) | indent(4) }}
 {% do deps.append('file: dj_' + app.name + '_env') %}
 
+dj_{{ app.name }}_collectstatic:
+  cmd.run:
+    - name: '. {{ venv }}/bin/activate && python manage.py collectstatic --no-input'
+    - cwd: {{ root }}/{{ app.name }}
+    - onchanges:
+      {{ labels(deps) | indent(6) }}
+
 dj_{{ app.name }}_migrate:
   cmd.run:
     - name: '. {{ venv }}/bin/activate && python manage.py migrate'
