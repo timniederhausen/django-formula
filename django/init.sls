@@ -1,18 +1,11 @@
 {% from 'django/map.jinja' import django with context %}
-{% from 'django/macros.jinja' import labels with context %}
+{% from 'django/macros.jinja' import sls_block, labels with context %}
 
 {% for pkg in django.packages %}
-dj_pkg_{{ pkg }}:
+{{ pkg }}:
   pkg.installed:
     - name: {{ pkg }}
 {% endfor %}
-
-{% if grains.os_family == 'FreeBSD' %}
-dj_ensurepip:
-  cmd.run:
-    - name: {{ django.python }} -m ensurepip
-    - creates: /usr/local/lib/python3.5/site-packages/pip
-{% endif %}
 
 {% for app in django.apps %}
 {% set root = app.get('root', '/home/' + app.user) %}
@@ -28,18 +21,21 @@ dj_{{ app.name }}_group:
 
 dj_{{ app.name }}_install:
   file.managed:
-    - name: {{ root }}/{{ app.name }}.zip
+    - name: {{ root }}/{{ app.name }}.tgz
     - user: {{ app.user }}
     - group: {{ app.group }}
     {{ sls_block(app.archive) | indent(4) }}
 {% do deps.append('file: dj_' + app.name + '_install') %}
 
 dj_{{ app.name }}_unzip:
-  archive.extracted:
+  file.directory:
     - name: {{ root }}/{{ app.name }}
     - user: {{ app.user }}
     - group: {{ app.group }}
-    - source: {{ root }}/{{ app.name }}.zip
+  cmd.run:
+    - name: tar xf {{ root }}/{{ app.name }}.tgz
+    - runas: {{ app.user }}
+    - cwd: {{ root }}/{{ app.name }}
     - onchanges:
       - file: dj_{{ app.name }}_install
 
@@ -49,8 +45,8 @@ dj_{{ app.name }}_venv:
 {% if app.requirements_file is defined %}
     - requirements: {{ root }}/{{ app.name }}/{{ app.requirements_file }}
 {% endif %}
-    - user: {{ app.user }}
-{% do deps.append('virtualenv: dj_' + app.name + '_install') %}
+#    - user: {{ app.user }}
+{% do deps.append('virtualenv: dj_' + app.name + '_venv') %}
 
 # .env for decouple
 dj_{{ app.name }}_env:
@@ -64,8 +60,8 @@ dj_{{ app.name }}_env:
 dj_{{ app.name }}_migrate:
   cmd.run:
     - name: '. {{ venv }}/bin/activate && python manage.py migrate'
+    - cwd: {{ root }}/{{ app.name }}
     - onchanges:
-      {{ labels(deps) | indent(4) }}
-{% do deps.append('file: dj_' + app.name + '_install') %}
+      {{ labels(deps) | indent(6) }}
 
 {% endfor %}

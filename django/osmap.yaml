@@ -1,5 +1,6 @@
 FreeBSD:
-  python: /usr/local/bin/python3.5
+  python: /usr/local/bin/python
   packages:
-    - python35
-    - py35-sqlite3
+    - python
+    - py27-sqlite3
+    - py27-virtualenv
