@@ -61,6 +61,7 @@ dj_{{ app.name }}_collectstatic:
   cmd.run:
     - name: '. {{ venv }}/bin/activate && python manage.py collectstatic --no-input'
     - cwd: {{ root }}/{{ app.name }}
+    - runas: {{ app.user }}
     - onchanges:
       {{ labels(deps) | indent(6) }}
 
@@ -68,6 +69,7 @@ dj_{{ app.name }}_migrate:
   cmd.run:
     - name: '. {{ venv }}/bin/activate && python manage.py migrate'
     - cwd: {{ root }}/{{ app.name }}
+    - runas: {{ app.user }}
     - onchanges:
       {{ labels(deps) | indent(6) }}
 
