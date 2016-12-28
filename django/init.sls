@@ -73,4 +73,11 @@ dj_{{ app.name }}_migrate:
     - onchanges:
       {{ labels(deps) | indent(6) }}
 
+{% if app.touch is defined %}
+dj_{{ app.name }}_touch:
+  file.touch:
+    - name: {{ app.touch }}
+    - onchanges:
+      {{ labels(deps) | indent(6) }}
+{% endif %}
 {% endfor %}
