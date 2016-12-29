@@ -77,6 +77,7 @@ dj_{{ app.name }}_migrate:
 dj_{{ app.name }}_touch:
   file.touch:
     - name: {{ app.touch }}
+    - makedirs: true
     - onchanges:
       {{ labels(deps) | indent(6) }}
 {% endif %}
