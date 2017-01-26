@@ -24,6 +24,7 @@ dj_{{ app.name }}_install:
     - name: {{ root }}/{{ app.name }}.tgz
     - user: {{ app.user }}
     - group: {{ app.group }}
+    - makedirs: true
     {{ sls_block(app.archive) | indent(4) }}
 {% do deps.append('file: dj_' + app.name + '_install') %}
 
