@@ -43,6 +43,8 @@ dj_{{ app.name }}_unzip:
 dj_{{ app.name }}_venv:
   virtualenv.managed:
     - name: {{ venv }}
+    - venv_bin: {{ django.virtualenv_bin }}
+    - python: {{ django.python_bin }}
 {% if app.requirements_file is defined %}
     - requirements: {{ root }}/{{ app.name }}/{{ app.requirements_file }}
 {% endif %}
