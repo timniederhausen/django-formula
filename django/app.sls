@@ -1,11 +1,6 @@
 {%- from 'django/map.jinja' import django with context %}
 {%- from 'django/macros.jinja' import sls_block, labels with context %}
 
-{# Allow app_name-based selection #}
-{%- if app is not defined and django.app_name is defined %}
-{%  set app = django.apps | selectattr("name", "equalto", django.app_name) | first %}
-{%- endif %}
-
 {% set root = app.get('root', '/home/' + app.user) %}
 {% set venv = root + '/' + app.virtualenv %}
 {% set deps = [] %}
