@@ -1,7 +1,7 @@
 FreeBSD:
-  python_bin: /usr/local/bin/python3.6
-  virtualenv_bin: /usr/local/bin/virtualenv-3.6
+  python_bin: /usr/local/bin/python3.7
+  virtualenv_bin: /usr/local/bin/virtualenv-3.7
   packages:
     - python
-    - py36-sqlite3
-    - py36-virtualenv
+    - py37-sqlite3
+    - py37-virtualenv
