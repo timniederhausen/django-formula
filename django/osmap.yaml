@@ -5,3 +5,4 @@ FreeBSD:
     - python
     - py37-sqlite3
     - py37-virtualenv
+    - py37-pip
